@@ -1,0 +1,35 @@
+{
+    "name" : "dottwatson/limkie-framework",
+    "description": "Micro, flexible, fast framework",
+    "authors": [
+        {
+            "name": "Mirko Temperini",
+            "email": "mirko.temperini@gmail.com"
+        }
+    ],
+
+    
+    "autoload": {
+        "psr-4": {
+            "Limkie\\": "src/"
+        },
+        "files": [
+            "src/Functions/app.php"
+        ]
+    },
+    
+    
+    "require": {
+        "phroute/phroute": "^2.1",
+        "adbario/php-dot-notation": "^2.2",
+        "vanilla/garden-cli": "^2.2",
+        "usmanhalalit/pixie": "^2.0",
+        "tracy/tracy": "^2.7",
+        "vlucas/phpdotenv": "^4.1",
+        "smarty/smarty": "^3.1",
+        "nahid/jsonq": "^5.2",
+        "composer/composer": "^1.10",
+        "rakit/validation": "^1.2"
+    }
+
+}
