@@ -76,7 +76,7 @@ class Module extends Command{
             'config',
             'Http',
             'Http/Controller',
-            'Http/Filter',
+            'Http/Gate',
             'Http/Response',
             'Http/Route',
             'public',

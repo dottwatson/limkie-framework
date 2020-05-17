@@ -4,53 +4,52 @@ namespace Limkie;
 
 abstract class Module{
 
+    public $path;
+    public $app;
 
+    public static $version;
+    public static $name;
+    public static $descroption;
+
+    protected $resourcePrefix = '';
+    
     public function __construct(){
+        $reflection = new \ReflectionClass(static::class);
 
+        $this->path = static::path();
+        $this->app = app();
+
+        $this->resourcePrefix = 'module://'.basename($this->path).'->';
     }
 
 
-    public function install(){
-
-    }
-
-    public function uninstall(){
-
+    public function model(string $path = '',array $data=[]){
+        return model("{$this->resourcePrefix}{$path}",$data);
     }
 
 
-    public function publishView(){
-        //publish views
-        $path = static::path();
-
-        if(is_dir("{$path}/view")){
-
-        }
-
+    public function view(string $path = ''){
+        return view("{$this->resourcePrefix}{$path}");
     }
 
-    public function publishConfig(){
-        //publish configurations
-        $path = static::path();
-
-        if(is_dir("{$path}/config")){
-            
-        }
-
+    public function controller(string $path = ''){
+        return controller("{$this->resourcePrefix}{$path}");
     }
 
-
-    public function publishAssets(){
-        //publish public resources
-        $path = static::path();
-
-        if(is_dir("{$path}/assets")){
-                        
-        }
-
+    public function response(string $path = ''){
+        return response("{$this->resourcePrefix}{$path}");
     }
 
-
+    /**
+     * Get the resource pprefix of current module
+     * e.g. modules://moduleName->
+     *
+     * @return void
+     */
+    public function resourcePrefix(){
+        return $this->resourcePrefix;
+    }
+    
     /**
      * Return thee path of module
      *

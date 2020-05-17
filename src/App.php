@@ -1,10 +1,10 @@
 <?php
 namespace Limkie;
 
-use Limkie\DebugWatcher;
-use Limkie\Config;
-use Limkie\DB;
-use Limkie\Storage;
+// use Limkie\DebugWatcher;
+// use Limkie\Config;
+// use Limkie\DB;
+// use Limkie\Storage;
 use Limkie\Console\Console;
 use Limkie\Traits\Events;
 use Limkie\Debugger as InternalDebugger;
@@ -13,10 +13,10 @@ use Dotenv\Dotenv;
 class App{
     use Events;
 
-    protected static $components = [];
     protected static $instance;
 
     public $config;
+
     public $watcher;
     public $console;
     public $session;
@@ -81,8 +81,6 @@ class App{
 
 
         //load class adapters
-        // dumpe($this->config->get('adapter',[]));
-        
         foreach($this->config->get('adapter',[]) as $coreItem=>$overrideCls){
             switch($coreItem){
                 case 'model':
@@ -120,16 +118,8 @@ class App{
      * @param string $component
      * @return self
      */
-    public static function getInstance($component=null){
-        $instance  = self::$instance;
-
-        if($component){
-            return (array_key_exists($component,self::$components))
-                ?self::$components[$component]
-                :null;
-        }
-
-        return $instance;
+    public static function getInstance(){
+        return self::$instance;
     }
 
     /**
@@ -148,16 +138,46 @@ class App{
             return response($maintenanceMessage);
         }
 
-        $this->loadFilter();
+        $this->loadGate();
 
         $this->loadRoutes();
 
         $this->console->loadCommands();
 
-        
+
+        //initialize and instantiate modules
+        Modules::init();
+
         $this->trigger('init');
     }
 
+
+    /**
+     * returns the module instance 
+     *
+     * @param string $moduleName
+     * @return object
+     */
+    public function module(string $moduleName){
+        return Modules::getModule($moduleName);
+    }
+
+    /**
+     * returns if module is loaded 
+     *
+     * @param string $moduleName
+     * @return bool
+     */
+    public function isModule(string $moduleName){
+        return Modules::isModule($moduleName);
+    }
+
+
+    /**
+     * Get the context where application run
+     *
+     * @return void
+     */
     public function getMode(){
         return $this->mode;
     }
@@ -180,22 +200,22 @@ class App{
 
  
     /**
-     * Load the router Filters
+     * Load the router Gates
      *
      * @return void
      */
-    public function loadFilter(){
-        //load Filter
-        $files = glob(__APP_PATH__."/app/Http/Filter/*.php");
-        foreach($files as $filterFile){
-            require $filterFile;
+    public function loadGate(){
+        //load Gate
+        $files = glob(__APP_PATH__."/app/Http/Gate/*.php");
+        foreach($files as $GateFile){
+            require $GateFile;
         }
 
-        //list all classes under filter namespace
+        //list all classes under Gate namespace
         $classes = get_declared_classes();
         foreach($classes as $className){
             $lowerClsName = strtolower($className);
-            if(strpos($lowerClsName,'app\\http\\filter\\') === 0){
+            if(strpos($lowerClsName,'app\\http\\gate\\') === 0){
                 $reflectionCLs  = new \ReflectionClass($className);
                 $properties     = $reflectionCLs->getDefaultProperties();
                 $alias = (isset($properties['alias']))

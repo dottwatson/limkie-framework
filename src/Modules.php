@@ -4,80 +4,39 @@ namespace Limkie;
 
 class Modules{
 
-    public static function buildList(){
-        //load data from composer installed file
-        $composerFile   = path('vendor/composer/installed.json');
-        $data           = file_get_contents($composerFile);
-        $packagesList   = json_decode($data,true);
-        
-        $cacheData      = [];
-
-        foreach($packagesList as $packageInfo){
-            $packageKey     = $packageInfo['source']['reference'];
-            $sources        = [];
-            $aliases        = [];
-            $classes        = [];
-
-            if(isset($packageInfo['autoload'],$packageInfo['autoload']['psr-4'])){
-                foreach($packageInfo['autoload']['psr-4'] as $name=>$autoloadPath){
-                    $packageAliased = self::packageNameToAlias($packageInfo['name']);
-                    $declaredClasses = self::getNamespacedCLasses($name);
-
-                    //remove ending backslash
-                    $namespaceAliased = preg_replace('#\\$#','',$name);
-
-                    $sources[$name] = path("vendor/{$packageInfo['name']}/{$autoloadPath}");
-                    $aliases[$name] = "Modules\\{$packageAliased}\\{$namespaceAliased}";
-                }
-
-                $cacheData[$packageKey]    = [
-                    'name'      =>$packageInfo['name'],
-                    'path'      =>path("vendor/{$packageInfo['name']}"),
-                    'src'       =>$sources,
-                    'aliases'   =>$aliases,
-                    'classes'   =>$declaredClasses
-                ];
-            }
-
-        }
-
-        return $cacheData;
-    }
+    protected $modules = [];
 
 
-    public static function discover(){
-        //generate modules list
-        $list = self::buildList();
+    public static function init(){
+        $envModules = config('env.'.getEnv('ENVIRONMENT').'.modules',[]);
 
-        dumpe($list);
+        foreach($envModules as $envModule){
+            $requiredFile   = getEnv('MODULES_DIR')."/{$envModule}/Module.php";
+            $moduleCls      = "Modules\\{$envModule}\\Module";
+            if(is_file($requiredFile)){
+                require_once $requiredFile;
 
-        foreach($list as $uKey=>$packageInfo){
-            if($packageInfo['src']){
-                foreach($packageInfo['src'] as $orginalCls=>$packageSrcPath){
-                    dump("dichiaro {$orginalCls} come {$packageInfo['aliases'][$orginalCls]}");
-                    class_alias($orginalCls,$packageInfo['aliases'][$orginalCls]);
+                if(class_exists("Modules\\{$envModule}\\Module")){
+                    self::$modules[$envModule] = new $moduleCls();
                 }
             }
         }
+    }
 
-        // [NAMESPACE] as Modules\vendorName\PackageName\[NAMESPACE] as MODULES\
-
+    public static function isModule(string $moduleName){
+        return array_key_exists($moduleName,self::$modules);
     }
 
 
-    protected static function packageNameToAlias($packageName){
-        $name = str_replace(['_','-'],' ',$packageName);
-        $name = ucwords($name);
-
-        return str_replace([' ','/'],['','\\'],$name);
+    public static function getModule(string $moduleName){
+        return (self::isModule($moduleName))
+            ?self::$modules[$moduleName]
+            :null;
     }
 
-    public static function getNamespacedClasses($needleNamespace){
-        $classes = get_declared_classes();
-        $neededClasses = array_filter($classes, function($i) use ($needleNamespace) {
-            return strpos($i, $needleNamespace) === 0;
-        });
 
-        return $neededClasses;
-    }
 }
+
+
+
+

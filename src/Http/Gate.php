@@ -3,7 +3,7 @@
 
 namespace Limkie\Http;
 
-abstract class Filter{
+abstract class Gate{
     
     protected $alias;
 
