@@ -81,7 +81,7 @@ class Module extends Command{
             'Http/Route',
             'public',
             'resources',
-            'View'
+            'View',
             'Model'
         ];
 
