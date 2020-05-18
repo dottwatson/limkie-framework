@@ -22,13 +22,13 @@ class Module extends Command{
 
     namespace Modules;
     
-    use Limkie\Module;
-    
+    use Limkie\Module as CoreModule;
+
     /**
      *  Module __CLASS__
      *  Created on __DATE__ using console
      */
-    class __CLASS__ extends Module{
+    class Module extends CoreModule{
     
         public function __construct(){
             parent::__construct();
@@ -44,9 +44,9 @@ class Module extends Command{
         $model = $this->model;
 
         $moduleName = preg_replace('#[^a-z0-9\_]+#i',' ',$this->arg('name'));
-        $moduleName = preg_replace('#\s+#','-',$moduleName);
+        $moduleName = preg_replace('#\s+#',' ',$moduleName);
+        $moduleName = str_replace(" ","",ucwords($moduleName));
 
-        die($moduleName);
 
         $modulesPath    = path(getEnv('MODULES_DIR'));
         $storage        = new Storage($modulesPath);
@@ -82,6 +82,7 @@ class Module extends Command{
             'public',
             'resources',
             'View'
+            'Model'
         ];
 
         foreach($folders as $folder){
