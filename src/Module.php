@@ -94,7 +94,7 @@ abstract class Module{
 
 
     /**
-     * Returns the nodule name based on its folder name
+     * Returns the module name based on its folder name
      *
      * @return string
      */
