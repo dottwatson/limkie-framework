@@ -54,12 +54,6 @@ class Config extends DataContainer{
             
         }
 
-        //load modules configurations
-        $dirs = glob(__APP_CONFIG_PATH__."/modules/*",GLOB_ONLYDIR);
-        foreach($dirs as $dir){
-            $moduleName = basename($dir);
-            $this->loadModule($moduleName);
-        }
     }
 
     /**
@@ -80,21 +74,21 @@ class Config extends DataContainer{
     }
 
     /**
-     * Load configuration of specific module name (declared as folder in config/modules/[modulename])
+     * Load configuration of specific module name (declared modules/[modulename]/config)
      * if previously loaded, will be reloaded. Act as a reset on startup values
      *
      * @param string $moduleName
      * @return void
      */
-    protected function loadModule(string $moduleName){
-        if(is_dir(__APP_CONFIG_PATH__."/{$moduleName}")){
-            $moduleConfigFiles = glob(__APP_CONFIG_PATH__."/{$moduleName}/*.php");
-            foreach($moduleConfigFiles as $configFile){
-                $configData = include $configFile;
-                $configIndex = basename($configFile,'.php');
-                $this->set("module.{$moduleName}.{$configIndex}",$configData);
-            }
+    protected function loadModule(string $moduleFolder,string $configName){
+        $filePath = path( getENv('MODULES_DIR')."/{$moduleFolder}/{$configName}.php");
+        
+        $configData = include $filePath;
+        if(!is_array($configData)){
+            throw new \Exception("{$configName} for module {$moduleFolder} is not a valid array");
         }
+
+        $this->set("modules.{$moduleFolder}.{$configName}",$configData);
     }
 
 

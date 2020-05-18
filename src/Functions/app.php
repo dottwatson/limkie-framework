@@ -115,7 +115,7 @@ function view(string $file,array $params= []){
         $pathTo         = path(getEnv('MODULES_DIR')."/{$resource['source']}/View/{$resource['target']}");
         $pathRewriteTo  = path("app/View/modules/{$resource['source']}/{$resource['target']}");
     }
-    elseif($resource['source_type'] == 'Package'){
+    elseif($resource['source_type'] == 'package'){
         $pathTo = path("vendor/{$resource['source']}/View/{$resource['target']}");
         $pathRewriteTo  = path("app/View/vendor/{$resource['source']}/{$resource['target']}");
     }
@@ -145,11 +145,24 @@ function view(string $file,array $params= []){
  * @return object
  */
 function model(string $name,array $params= []){
-    $cls = str_replace('.','\\',$name);
-    $namespacedCls = "App\\Model\\".$cls;
+    $resource       = parseResourceName($name);
+
+    if($resource['source_type'] == 'module'){
+        $realFile   = str_replace('.','/',$resource['target']).'.php';
+        $pathTo     = path(getEnv('MODULES_DIR')."/{$resource['source']}/Model/{$realFile}");
+        require_once $pathTo;
+        
+        $namespacedCls = "Modules\\{$resource['source']}\\Model\\";
+    }
+    else{
+        $namespacedCls = "App\\Model\\";
+    }
+
+    $namespacedCls .= str_replace('.','\\',$resource['target']);
     
+
     if(version_compare(PHP_VERSION, '5.6.0', '>=')){
-        $instance = new $namespacedCls(...$params);
+        $instance = new $namespacedCls($params);
     } else {
         $reflect  = new ReflectionClass($namespacedCls);
         $instance = $reflect->newInstanceArgs($params);
@@ -168,23 +181,23 @@ function model(string $name,array $params= []){
  * @return object
  */
 function controller(string $name,array $params= []){
-    $resource = parseResourceName($name);
+    $resource       = parseResourceName($name);
 
     if($resource['source_type'] == 'module'){
-        $namespace = "Modules\\{$resource['source']}\\Http\\Controller\\";
-    }
-    elseif($resource['source_type'] == 'Package'){
-        $namespace = "{$resource['source']}\\Http\\Controller\\";
+        $realFile   = str_replace('.','/',$resource['target']).'.php';
+        $pathTo     = path(getEnv('MODULES_DIR')."/{$resource['source']}/Http/Controller/{$realFile}");
+        require_once $pathTo;
+        
+        $namespacedCls = "Modules\\{$resource['source']}\\Http\\Controller\\";
     }
     else{
-        $namespace = "App\\Http\\Controller\\";
+        $namespacedCls = "App\\Http\\Controller\\";
     }
-    
-    $cls = str_replace('.','\\',$resource['target']);
-    $namespacedCls = $namespace.$cls;
-    
+
+    $namespacedCls .= str_replace('.','\\',$resource['target']);
+
     if(version_compare(PHP_VERSION, '5.6.0', '>=')){
-        $instance = new $namespacedCls(...$params);
+        $instance = new $namespacedCls($params);
     } else {
         $reflect  = new ReflectionClass($namespacedCls);
         $instance = $reflect->newInstanceArgs($params);
@@ -195,7 +208,7 @@ function controller(string $name,array $params= []){
 
 
 /**
- * Return a request object
+ * Return The request object
  *
  * @return Request
  */
@@ -230,23 +243,24 @@ function response(string $contents = null){
  * @return object
  */
 function responseOf(string $name,array $params = []){
-    $resource = parseResourceName($name);
+    $resource       = parseResourceName($name);
 
     if($resource['source_type'] == 'module'){
-        $namespace = "Modules\\{$resource['source']}\\Http\\Response\\";
-    }
-    elseif($resource['source_type'] == 'Package'){
-        $namespace = "{$resource['source']}\\Http\\Response\\";
+        $realFile   = str_replace('.','/',$resource['target']).'.php';
+        $pathTo     = path(getEnv('MODULES_DIR')."/{$resource['source']}/Http/REsponse/{$realFile}");
+        require_once $pathTo;
+        
+        $namespacedCls = "Modules\\{$resource['source']}\\Http\\Response\\";
     }
     else{
-        $namespace = "App\\Http\\Response\\";
+        $namespacedCls = "App\\Http\\Response\\";
     }
 
-    $cls = str_replace('.','\\',$resource['target']);
-    $namespacedCls = $namespace.$cls;
+    $namespacedCls .= str_replace('.','\\',$resource['target']);
     
+
     if(version_compare(PHP_VERSION, '5.6.0', '>=')){
-        $instance = new $namespacedCls(...$params);
+        $instance = new $namespacedCls($params);
     } else {
         $reflect  = new ReflectionClass($namespacedCls);
         $instance = $reflect->newInstanceArgs($params);
@@ -373,19 +387,16 @@ function decrypt($var,string $key = null,string $cipher = null){
 /**
  * Deeply trim an array of data
  *
- * @param string|array $data
- * @return string|array
+ * @param array $data
+ * @param string $charlist
+ * @return array
  */
-function deeptrim(array $data){
-    if (is_string($data)){
-        return trim($data);
-    }
-
+function trim_array(array $data,string $charlist = " \t\n\r\0\x0B"){
     foreach ($data as $k => $v) {
         if (is_string($v)) {
-            $data[$k] = trim($v);
+            $data[$k] = trim($v,$charlist);
         } elseif (is_array($v)) {
-            $data[$k] = deeptrim($v);
+            $data[$k] = trim_array($v,$charlist);
         }
     }
     return $data;
