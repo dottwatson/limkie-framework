@@ -7,7 +7,7 @@ abstract class Gate{
     
     protected $alias;
 
-    abstract public function handle();
+    abstract public function handle($reouteInfo);
 
     /**
      * Use a specific response using its relative namespace with dot Notation

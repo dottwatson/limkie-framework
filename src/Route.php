@@ -2,7 +2,7 @@
 namespace Limkie;
 
 use Phroute\Phroute\RouteCollector;
-use Phroute\Phroute\Dispatcher;
+use Limkie\RouteDispatcher;
 use Limkie\RouteResolver;
 use Limkie\Http\Request;
 use Limkie\Storage;
@@ -29,7 +29,7 @@ class Route{
 
         $resolver = new RouteResolver();
         if(!self::$dispatcher){
-            self::$dispatcher = new Dispatcher(self::$router->getData(),$resolver);
+            self::$dispatcher = new RouteDispatcher(self::$router->getData(),$resolver);
         }
 
        
@@ -59,4 +59,8 @@ class Route{
         exit;
     }
 
+
+    public static function getDispatcher(){
+        return self::$dispatcher;
+    }
 }

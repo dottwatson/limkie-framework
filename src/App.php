@@ -130,19 +130,19 @@ class App{
     public function init(){
         $this->mode = PHP_SAPI;
 
-        if($this->isMaintenanceActive()){
-            $maintenanceMessage = ($this->isCommandLine())
-                ?"Under Maintenance\n"
-                :(new Storage('public'))->contentFile('maintenance.html');
+        $this->console->loadCommands();
 
-            return response($maintenanceMessage);
+        if(!$this->isMaintenanceActive()){
+            $this->loadGate();
+            $this->loadRoutes();
         }
 
-        $this->loadGate();
 
-        $this->loadRoutes();
-
-        $this->console->loadCommands();
+        if($this->isMaintenanceActive() && !$this->isCommandLine()){
+            $publicStorage = new Storage(path('public'));
+            echo response($publicStorage->contentFile('maintenance.html'));
+            exit;
+        }
 
 
         //initialize and instantiate modules
@@ -227,14 +227,16 @@ class App{
                         $instance = new $className;
                         $response = response();
                         
-                        $nextStep = $instance->handle();
+                        $dispatcher = Route::getDispatcher();
+
+                        $nextStep = $instance->handle($dispatcher->getRouteInfo());
 
                         if($nextStep instanceOf \Limkie\Http\Response){
                             echo (string)$nextStep;
                             exit;
                         }
 
-                        $continue = ($nextStep === true)?null:false;
+                        $continue = ($nextStep === true || $nextStep === null)?null:false;
 
                         return $continue;
                     });
@@ -266,7 +268,8 @@ class App{
      * @return boolean
      */
     public function isMaintenanceActive(){
-        return (new Storage('var'))->isFile('maintenance.lock');
+        $storage = new Storage(path('var')); 
+        return $storage->isFile('maintenance.lock');
     }
 
     /**
@@ -361,5 +364,14 @@ class App{
         //     die();
         //     return $e->getMessage();    
         // }
+    }
+
+
+    public function env(string $key = null){
+        $key =  ($key)?".{$key}":"";
+
+        $envKey = 'env.'.getEnv('ENVIRONMENT').$key;
+
+        return $this->config->get($envKey);
     }
 }
