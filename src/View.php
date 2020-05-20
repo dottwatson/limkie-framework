@@ -26,7 +26,11 @@ class View{
             self::$engine->setTemplateDir(self::$basePath);
             self::$engine->setCompileDir(config('view.cache').'/smarty/compile');
             self::$engine->setCacheDir(config('view.cache').'/smarty/cache');
-            self::$engine->setCaching(config('view.caching'));
+
+            if(app()->env('view.cache') !== null){
+                self::$engine->setCaching(app()->env('view.cache'));
+            }
+
         }
     }
 

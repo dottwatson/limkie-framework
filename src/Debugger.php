@@ -23,10 +23,15 @@ class Debugger{
     
             if(config("env.{$appEnv}.debug.enabled")){
                 DebuggerTool::enable($debugMode, config('storage.logs') );
-                DebuggerTool::$showBar = config("env.{$appEnv}.debug.bar",false);
-                DebuggerTool::$strictMode = config("env.{$appEnv}.debug.error.level");
-                DebuggerTool::$logSeverity = config("env.{$appEnv}.debug.log.severity");
+                DebuggerTool::$showBar      = config("env.{$appEnv}.debug.bar",false);
+                DebuggerTool::$strictMode   = config("env.{$appEnv}.debug.error.level");
+                DebuggerTool::$logSeverity  = config("env.{$appEnv}.debug.log.severity");
+
+                DebuggerTool::$maxDepth  = config("env.{$appEnv}.debug.maxDepth",5);
+                DebuggerTool::$maxLength = config("env.{$appEnv}.debug.maxLength",150);
+
                 DebuggerTool::$email = config("env.{$appEnv}.debug.notify");
+
             }
     
 
