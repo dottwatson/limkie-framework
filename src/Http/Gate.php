@@ -7,7 +7,9 @@ abstract class Gate{
     
     protected $alias;
 
-    abstract public function handle($reouteInfo);
+    protected $router;
+
+    abstract public function handle();
 
     /**
      * Use a specific response using its relative namespace with dot Notation

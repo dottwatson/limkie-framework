@@ -4,11 +4,37 @@ namespace Limkie;
 
 use Limkie\Http\Request;
 use  Phroute\Phroute\Dispatcher;
+use Phroute\Phroute\RouteDataInterface;
+use Phroute\Phroute\HandlerResolverInterface;
+use Phroute\Phroute\HandlerResolver;
 
 class RouteDispatcher extends Dispatcher{
 
     protected $routeInfo =  [];
+    private $handlerResolver;
     
+
+    /**
+     * Create a new route dispatcher.
+     *
+     * @param RouteDataInterface $data
+     * @param HandlerResolverInterface $resolver
+     */
+    public function __construct(RouteDataInterface $data, HandlerResolverInterface $resolver = null)
+    {
+        parent::__construct($data,$resolver);
+        
+        if ($resolver === null)
+        {
+        	$this->handlerResolver = new HandlerResolver();
+        }
+        else
+        {
+        	$this->handlerResolver = $resolver;
+        }
+    }
+
+
     /**
      * Dispatch a route for the given HTTP Method / URI.
      *
@@ -27,7 +53,7 @@ class RouteDispatcher extends Dispatcher{
         $dispatchFilters = new \ReflectionMethod($this,'dispatchFilters');
         $dispatchFilters->setAccessible(true);
 
-       
+      
         list($handler, $filters, $vars) = $dispatchRoute->invokeArgs($this,[$httpMethod, trim($uri, '/')]);
 
         $this->routeInfo = [

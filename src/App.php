@@ -229,7 +229,15 @@ class App{
                         
                         $dispatcher = Route::getDispatcher();
 
-                        $nextStep = $instance->handle($dispatcher->getRouteInfo());
+                        $reflectionGateRoute = new \ReflectionProperty($instance,'router');
+                        $reflectionGateRoute->setAccessible(true);
+
+                        $routerData = $dispatcher->getRouteInfo();
+                        $routerDataContainer = new DataContainer($routerData);
+
+                        $reflectionGateRoute->setValue($instance,$routerDataContainer);
+
+                        $nextStep = $instance->handle();
 
                         if($nextStep instanceOf \Limkie\Http\Response){
                             echo (string)$nextStep;
