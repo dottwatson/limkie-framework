@@ -2,9 +2,10 @@
 
 namespace Limkie\Http;
 
+use Limkie\DataContainer;
 use Rakit\Validation\Validator;
 use Limkie\Http\Request;
-
+use Limkie\Route;
 
 class Controller{
 
@@ -17,6 +18,13 @@ class Controller{
      */
     protected $defaultResponse;
 
+    /**
+     * The current route informations
+     *
+     * @var DataContainer
+     */
+    protected $route;
+
     public function __construct(){
         $this->validator    = new Validator();
         $this->request      = new Request;
@@ -25,6 +33,10 @@ class Controller{
             :response();
 
         $this->app = app();
+
+        $routeInfo = Route::getDispatcher()->getRouteInfo();
+
+        $this->route = new DataContainer($routeInfo);
     }
 
     

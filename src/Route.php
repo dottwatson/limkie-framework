@@ -49,8 +49,8 @@ class Route{
             $contents404 = $publicStorage->contentFile('404.html');
             $response = response($contents404)->setStatus(404);
         }
-        else{
-            $response = $response->getMessage();
+        elseif($response instanceof \Exception){
+            $response = response($response->getMessage());
         }
         
         echo (string)$response;
