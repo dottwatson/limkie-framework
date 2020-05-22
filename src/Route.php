@@ -2,6 +2,7 @@
 namespace Limkie;
 
 use Phroute\Phroute\RouteCollector;
+use Phroute\Phroute\Exception\HttpRouteNotFoundException;
 use Limkie\RouteDispatcher;
 use Limkie\RouteResolver;
 use Limkie\Http\Request;
@@ -32,6 +33,7 @@ class Route{
             self::$dispatcher = new RouteDispatcher(self::$router->getData(),$resolver);
         }
 
+        $publicStorage = new Storage(__APP_PATH__.'/public');
        
         $routeUrl = preg_replace(
             '#^'.preg_quote(Request::baseUrl(PHP_URL_PATH),'#').'#',
@@ -39,19 +41,16 @@ class Route{
             Request::url(PHP_URL_PATH)
         );
 
+        $requestMethod = (app()->isCommandLine())?'GET':$_SERVER['REQUEST_METHOD'];
+        $response = self::$dispatcher->dispatch($requestMethod,$routeUrl);
 
-        try{
-            $requestMethod = (app()->isCommandLine())?'GET':$_SERVER['REQUEST_METHOD'];
-            $response = self::$dispatcher->dispatch($requestMethod,$routeUrl);
+
+        if($response instanceof HttpRouteNotFoundException){
+            $contents404 = $publicStorage->contentFile('404.html');
+            $response = response($contents404)->setStatus(404);
         }
-        catch(\Exception $e){
-            if($e instanceof \Phroute\Phroute\Exception\HttpRouteNotFoundException){
-                $contents404 = (new Storage('public'))->contentFile('404.html');
-                $response = response($contents404)->setStatus(404);
-            }
-            else{
-                $response = $e->getMessage();
-            }
+        else{
+            $response = $response->getMessage();
         }
         
         echo (string)$response;

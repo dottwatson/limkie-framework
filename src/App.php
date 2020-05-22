@@ -207,8 +207,8 @@ class App{
     public function loadGate(){
         //load Gate
         $files = glob(__APP_PATH__."/app/Http/Gate/*.php");
-        foreach($files as $GateFile){
-            require $GateFile;
+        foreach($files as $gateFile){
+            require $gateFile;
         }
 
         //list all classes under Gate namespace

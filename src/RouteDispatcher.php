@@ -53,14 +53,19 @@ class RouteDispatcher extends Dispatcher{
         $dispatchFilters = new \ReflectionMethod($this,'dispatchFilters');
         $dispatchFilters->setAccessible(true);
 
+        try{
+            list($handler, $filters, $vars) = $dispatchRoute->invokeArgs($this,[$httpMethod, trim($uri, '/')]);
+        }
+        catch(\Exception $e){
+            return $e;
+        }
       
-        list($handler, $filters, $vars) = $dispatchRoute->invokeArgs($this,[$httpMethod, trim($uri, '/')]);
-
         $this->routeInfo = [
             'uri' => trim($uri,'/'),
             'url' => Request::url(),
             'vars' => $vars
         ];
+
 
         list($beforeFilter, $afterFilter) = $parseFilters->invokeArgs($this,[$filters]);
 
