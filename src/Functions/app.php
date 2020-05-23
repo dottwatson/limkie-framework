@@ -10,13 +10,56 @@ use Limkie\Translations;
 use Nahid\JsonQ\Jsonq;
 
 /**
- * Return app instance
+ * Return app instance or if requested, a specific attribute like
+ * config: the config instance (as app()->config )
+ * watch: watch an elelemt like app()->watch(key,value)
+ * track: track in session as app()->track(value)
+ * mode: same ad app()->getMode()
+ * route: same as app()->getCurrentRoute()
  *
  * @return App
  */
-function app(){
-    return App::getInstance();
+function app(string $needed= null,$value = null){
+    $app    = App::getInstance();
+    $needed = strtolower( trim( (string)$needed ) );
+    if($needed != ''){
+        switch($needed){
+            case 'config':
+            case 'session':
+            case 'route':
+            case 'console':
+                return app()->{$needed};
+            break;
+            case 'watch':
+                if(!is_array($value)){
+                    $key    = uniqid();
+                    $params = [$key=>$value];
+                }
+                else{
+                    $params = $value;
+                }
+
+                foreach($value as $key=>$value){
+                    call_user_func_array([$app,$needed],$params);
+                }
+            break;
+
+            case 'track':
+                return $app->track($value);
+            break;
+            case 'mode':
+                return $app->getMode();
+            break;
+            default:
+                throw new \Exception("Invalid app {$needed}");
+            break;
+            }
+    }
+    else{
+        return App::getInstance();
+    }
 }
+
 
 /**
  * parse a resource

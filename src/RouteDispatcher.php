@@ -66,7 +66,6 @@ class RouteDispatcher extends Dispatcher{
             'vars' => $vars
         ];
 
-
         list($beforeFilter, $afterFilter) = $parseFilters->invokeArgs($this,[$filters]);
 
         if(($response = $dispatchFilters->invokeArgs($this,[$beforeFilter])) !== null)
@@ -81,6 +80,11 @@ class RouteDispatcher extends Dispatcher{
         return $dispatchFilters->invokeArgs($this,[$afterFilter, $response]);
     }
 
+    /**
+     * Return onfo on current route resolved
+     *
+     * @return void
+     */
     public function getRouteInfo(){
         return $this->routeInfo;
     }

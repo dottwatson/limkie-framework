@@ -17,9 +17,11 @@ class App{
 
     public $config;
 
-    public $watcher;
-    public $console;
-    public $session;
+    protected $watcher;
+
+    protected $console;
+    protected $session;
+    protected $router;
 
     protected $mode;
 
@@ -111,6 +113,21 @@ class App{
 
         self::$instance = $this;
     }
+
+    public function __get($name){
+        switch($name){
+            case 'config':
+            case 'session':
+            case 'console':
+                return $this->{$name};
+            break;
+            case 'route':
+                $data = Route::getDispatcher()->getRouteInfo();
+                return new DataContainer($data);
+            break;
+        }
+    }
+
 
     /**
      * Singleton
@@ -227,15 +244,16 @@ class App{
                         $instance = new $className;
                         $response = response();
                         
-                        $dispatcher = Route::getDispatcher();
+                        // $dispatcher = Route::getDispatcher();
 
-                        $reflectionGateRoute = new \ReflectionProperty($instance,'router');
-                        $reflectionGateRoute->setAccessible(true);
+                        // $reflectionGateRoute = new \ReflectionProperty($instance,'router');
+                        // $reflectionGateRoute->setAccessible(true);
 
-                        $routerData = $dispatcher->getRouteInfo();
-                        $routerDataContainer = new DataContainer($routerData);
+                        // $routerData = $dispatcher->getRouteInfo();
+                        // $routerDataContainer = new DataContainer($routerData);
 
-                        $reflectionGateRoute->setValue($instance,$routerDataContainer);
+
+                        // $reflectionGateRoute->setValue($instance,$routerDataContainer);
 
                         $nextStep = $instance->handle();
 
@@ -301,7 +319,9 @@ class App{
             $value = &$value;
         }
 
-        return $this->watcher->register($key,$value);
+        $this->watcher->register($key,$value);
+    
+        return $this;
     }
 
     /**
@@ -328,6 +348,8 @@ class App{
     public function track($trackedItem){
         $sessionKey = getEnv('SESSION_NAME');
         $this->session["{$sessionKey}_tracker"][] = $trackedItem;
+
+        return $this;
     }
 
     /**
@@ -382,4 +404,5 @@ class App{
 
         return $this->config->get($envKey);
     }
+
 }

@@ -7,8 +7,6 @@ abstract class Gate{
     
     protected $alias;
 
-    protected $router;
-
     abstract public function handle();
 
     /**

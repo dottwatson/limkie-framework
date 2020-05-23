@@ -11,18 +11,53 @@ use Limkie\Storage;
 
 class Route{
     
+    /**
+     * The internal router
+     *
+     * @var RouteCollector
+     */
     protected static $router;
+
+    /**
+     * The internal dispatcher
+     *
+     * @var RouteDispatcher
+     */
     protected static $dispatcher;
 
 
+    /**
+     * Bridge on real router
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return void
+     */
     public static function __callStatic($name, $arguments){
         if(!self::$router){
             self::$router = new RouteCollector;
         }
-    
+
         return call_user_func_array([self::$router,$name],$arguments);
     }
 
+    /**
+     * Create  gate from a closure
+     *
+     * @param string $alias
+     * @param \Closure $closure
+     * @return void
+     */
+    public static function gate(string $alias,\Closure $closure){
+        $router = self::$router;
+        $router->filter($alias,$closure);
+    }
+
+    /**
+     * Dispatch current request
+     *
+     * @return void
+     */
     public static function dispatch(){
         if(!self::$router){
             self::$router = new RouteCollector;
@@ -58,7 +93,11 @@ class Route{
         exit;
     }
 
-
+    /**
+     * Returns current Dispacher
+     *
+     * @return RouteDispatcher
+     */
     public static function getDispatcher(){
         return self::$dispatcher;
     }
