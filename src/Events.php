@@ -77,11 +77,15 @@ class Events{
      * @return void
      */
     public static function onCls($clsName,$eventName,$callBack){
-        if(!array_key_exists($clsName,self::$events)){
+        if(!array_key_exists($clsName,self::$clsEvents)){
             self::$clsEvents[$clsName] = [];
         }
 
-        self::$clsEvents[$clsName][$eventName] = $callBack;
+        if(!array_key_exists($eventName,self::$clsEvents[$clsName])){
+            self::$clsEvents[$clsName][$eventName] = [];
+        }
+
+        self::$clsEvents[$clsName][$eventName][] = $callBack;
     }
 
 
@@ -101,10 +105,12 @@ class Events{
             return false;
         }
 
-        if(is_callable(self::$clsEvents[$clsName][$eventName])){
-            $result = call_user_func_array(self::$clsEvents[$clsName][$eventName],$args);
-            if($result === false){
-                return;
+        foreach(self::$clsEvents[$clsName][$eventName] as $eventCallBack){
+            if(is_callable($eventCallBack)){
+                $result = call_user_func_array($eventCallBack,$args);
+                if($result === false){
+                    return;
+                }
             }
         }
     }
