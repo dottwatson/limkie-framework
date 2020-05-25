@@ -14,8 +14,9 @@ class App{
     use Events;
 
     protected static $instance;
+    protected static $initialized;
 
-    public $config;
+    protected $config;
 
     protected $watcher;
 
@@ -145,6 +146,10 @@ class App{
      * @return void
      */
     public function init(){
+        if(self::$initialized){
+            return;
+        }
+        
         $this->mode = PHP_SAPI;
 
         $this->console->loadCommands();
@@ -166,6 +171,8 @@ class App{
         Modules::init();
 
         $this->trigger('init');
+
+        self::$initialized = true;
     }
 
 
