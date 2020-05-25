@@ -3,6 +3,7 @@
 use Limkie\App;
 use Limkie\DB;
 use Limkie\Config;
+use Limkie\Pipe;
 use Limkie\Http\Request;
 use Limkie\Http\Response;
 use Limkie\Route;
@@ -16,6 +17,12 @@ use Nahid\JsonQ\Jsonq;
  */
 function app(){
     return  App::getInstance();
+}
+
+
+function pipe($value){
+    $instance = new Pipe($value);
+    return $instance;
 }
 
 /**
