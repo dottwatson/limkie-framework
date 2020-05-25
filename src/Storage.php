@@ -54,7 +54,7 @@ class Storage{
     }
 
     /**
-     * check if is requested path exists
+     * check if is requested path exists, relative to the current working path
      *
      * @param string $subpath
      * @return boolean
@@ -64,7 +64,7 @@ class Storage{
     }
 
     /**
-     * CHeck if requested file exists
+     * Check if requested file exists, relative to the current working path
      *
      * @param string $subpath
      * @return boolean
@@ -106,7 +106,7 @@ class Storage{
         
             
             file_put_contents($fileName,$contents);
-            return true;
+            return $this;
         }
         catch(\Exception $e){
             return false;
@@ -131,7 +131,7 @@ class Storage{
         
             
             file_put_contents($fileName,$contents,FILE_APPEND);
-            return true;
+            return $this;
         }
         catch(\Exception $e){
             return false;
@@ -152,7 +152,7 @@ class Storage{
             if(!$this->isDir($path)){
                 mkdir($fullPath,0777,true);
             }
-            return false;
+            return $this;
         }
         catch(\Exception $e){
             return false;
@@ -170,10 +170,9 @@ class Storage{
     public function deleteFile(string $fileName){
         if($this->isFile($fileName)){
             unlink($this->getFullPath($fileName));
-            return true;
         }
 
-        return false;
+        return $this;
     }
 
 
@@ -203,7 +202,7 @@ class Storage{
                     }
                 }
             }
-            return true;
+            return $this;
         }
         catch(\Exception $e){
             return false;
@@ -232,7 +231,7 @@ class Storage{
     }
 
     /**
-     * returnr to storage basepath
+     * returnr to storage basepath or up for N levels
      *
      * @param integer $level
      * @return self
@@ -261,7 +260,7 @@ class Storage{
 
 
     /**
-     * get al contnts of directory, recursive
+     * get all contents of directory, recursive
      *
      * @param string $subpath
      * @return array
@@ -283,6 +282,5 @@ class Storage{
         return $items;
     }
     
-
 }
 
