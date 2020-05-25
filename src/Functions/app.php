@@ -10,54 +10,43 @@ use Limkie\Translations;
 use Nahid\JsonQ\Jsonq;
 
 /**
- * Return app instance or if requested, a specific attribute like
- * config: the config instance (as app()->config )
- * watch: watch an elelemt like app()->watch(key,value)
- * track: track in session as app()->track(value)
- * mode: same ad app()->getMode()
- * route: same as app()->getCurrentRoute()
+ * Return app instance
  *
  * @return App
  */
-function app(string $needed= null,$value = null){
-    $app    = App::getInstance();
-    $needed = strtolower( trim( (string)$needed ) );
-    if($needed != ''){
-        switch($needed){
-            case 'config':
-            case 'session':
-            case 'route':
-            case 'console':
-                return app()->{$needed};
-            break;
-            case 'watch':
-                if(!is_array($value)){
-                    $key    = uniqid();
-                    $params = [$key=>$value];
-                }
-                else{
-                    $params = $value;
-                }
+function app(){
+    return  App::getInstance();
+}
 
-                foreach($value as $key=>$value){
-                    call_user_func_array([$app,$needed],$params);
-                }
-            break;
+/**
+ * Return a module instance if exists or false
+ *
+ * @return object|false
+ */
+function module(string $name){
+    return app()->module($name);
+}
 
-            case 'track':
-                return $app->track($value);
-            break;
-            case 'mode':
-                return $app->getMode();
-            break;
-            default:
-                throw new \Exception("Invalid app {$needed}");
-            break;
-            }
-    }
-    else{
-        return App::getInstance();
-    }
+/**
+ * Watch item in current context, exposed in error page
+ *
+ * @param string $key
+ * @param mixed $item
+ * @return void
+ */
+function watch(string $key,$item){
+    app()->watch($key,$item);
+}
+
+
+/**
+ * Track item in current session
+ *
+ * @param mixed $item
+ * @return void
+ */
+function track($item){
+    app()->track($item);
 }
 
 
@@ -313,6 +302,8 @@ function responseOf(string $name,array $params = []){
 }
 
 
+/**************************** CONFIGURATION ***************************/
+
 /**
  * retrieve a value from configuraitons, with dot notation
  *
@@ -335,6 +326,7 @@ function setConfig(string $name,$value){
     return Config::getInstance()->set($name,$value);
 }
 
+
 /**
  * set or overwrite a configuration parameter, with dot notation
  *
@@ -348,6 +340,50 @@ function setConfigAll(array $data = []){
     }
 }
 
+
+/******************************** SESSION **************************/
+
+/**
+ * retrieve info from session
+ *
+ * @param string $key if null, all session data are available
+ * @param mixed $default
+ * @return mixed
+ */
+function session(string $key = null,$default = null){
+    return ($key !== null)
+        ?app()->session->get($key,$default)
+        :app()->session->all();
+}
+
+/**
+ * Set session value
+ *
+ * @param string $key
+ * @param [type] $value
+ * @return void
+ */
+function setSession(string $key,$value){
+    return app()->session->set($key,$value);
+}
+
+/**
+ * Clean app session session
+ *
+ * @return void
+ */
+function sessionEmpty(){
+    app()->session->clera();
+}
+
+/**
+ * Remove a key from session
+ *
+ * @return void
+ */
+function sessionRemove(string $key){
+    app()->session->delete($key);
+}
 
 
 /**
