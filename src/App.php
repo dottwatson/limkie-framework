@@ -381,26 +381,9 @@ class App{
         $contents = stream_get_contents(STDOUT, -1, 0);
         $contents2 = stream_get_contents(STDERR, -1, 0);
 
-
-        var_dump($contents,$contents2);
-        die();
-    
-        // try{
-
-        //     $this->console->listen($argumens);
-        //     $contents = stream_get_contents(STDOUT, -1, 0);
-        //     $contents2 = stream_get_contents(STDERR, -1, 0);
-
-
-        //     var_dump($contents,$contents2);
-        //     die();
-        //     return $contents;
-        // }
-        // catch(\Exception $e){
-        //     echo "errore!!";
-        //     die();
-        //     return $e->getMessage();    
-        // }
+        return $contents;
+        // var_dump($contents,$contents2);
+        // die();
     }
 
 

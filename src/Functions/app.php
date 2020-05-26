@@ -25,6 +25,17 @@ function pipe($value){
     return $instance;
 }
 
+
+/**
+ * Execute a console command
+ *
+ * @param string $command
+ * @return void
+ */
+function console(string $command){
+    return app()->execCommand($command);
+}
+
 /**
  * Return a module instance if exists or false
  *
