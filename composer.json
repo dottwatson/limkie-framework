@@ -14,7 +14,11 @@
             "Limkie\\": "src/"
         },
         "files": [
-            "src/Functions/app.php"
+            "src/Functions/app.php",
+            "src/Functions/config.php",
+            "src/Functions/http.php",
+            "src/Functions/session.php",
+            "src/Functions/strings.php"
         ]
     },
     
