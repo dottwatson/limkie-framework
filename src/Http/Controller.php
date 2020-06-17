@@ -2,12 +2,12 @@
 
 namespace Limkie\Http;
 
-use Limkie\DataContainer;
+use Limkie\Traits\Globalizer;
 use Rakit\Validation\Validator;
-use Limkie\Http\Request;
-use Limkie\Route;
+
 
 class Controller{
+    use Globalizer;
 
     /**
      * The default response class , declared in dot notation
@@ -18,25 +18,18 @@ class Controller{
      */
     protected $defaultResponse;
 
-    /**
-     * The current route informations
-     *
-     * @var DataContainer
-     */
+    protected $app;
     protected $route;
 
+
     public function __construct(){
+        $this->globalize();
+
         $this->validator    = new Validator();
-        $this->request      = new Request;
         $this->response     = ($this->defaultResponse)
             ?$this->withResponse($this->defaultResponse)
             :response();
 
-        $this->app = app();
-
-        $routeInfo = Route::getDispatcher()->getRouteInfo();
-
-        $this->route = new DataContainer($routeInfo);
     }
 
     

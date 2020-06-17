@@ -2,12 +2,16 @@
 namespace Limkie\Http;
 
 use Limkie\DataContainer;
+use Limkie\Traits\Globalizer;
 
 /**
  * Retrieve informations on current request
  */
 class Request{
     
+    protected $app;
+    protected $route;
+
     protected static $get;
     protected static $post;
     protected static $request;

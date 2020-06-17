@@ -1,11 +1,22 @@
 <?php
-
-
 namespace Limkie\Http;
 
+use Limkie\Traits\Globalizer;
+
 abstract class Gate{
+    use Globalizer;
     
+    protected $app;
+    protected $request;
+    protected $route;
+
+
     protected $alias;
+
+
+    public function __construct(){
+        $this->globalize();
+    }
 
     abstract public function handle();
 
