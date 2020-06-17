@@ -7,7 +7,7 @@ use Limkie\Console\Command;
 use Limkie\Storage;
 
 class Response extends Command{
-    protected $description = 'Create a basico Response using dot notation as namespace';
+    protected $description = 'Create a basic Response using dot notation as namespace';
 
     protected $options = [
         'force'     => ['force override of file.',false,'boolean']

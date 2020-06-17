@@ -3,38 +3,48 @@
 namespace Limkie\Console\Command\Create;
 
 use Limkie\Console\Console;
-use Limkie\Console\Command;
+use Limkie\Console\Command as CommandCls;
 use Limkie\Storage;
 
-class Model extends Command{
-    protected $description = 'Create a basic model using dot notation as namespace';
+class Command extends CommandCls{
+    protected $description = 'Create a basic command';
 
     protected $options = [
-        'path:p'    => ['specify the path where is created the model. if not set, the default path is app/Model, otherwhire is a path startig from app',false,'string'],
         'force'     => ['force override of file.',false,'boolean']
     ];
 
 
     protected $arguments = [
-        'name' => ['The model name, with its namespaces separated by dot (eg. Bar.Foo)']
+        'name' => ['The command name, with its namespaces separated by dot (eg. Bar.Foo)']
     ];
 
     private $model = '<?php
 
-    __NAMESPACE__
+__NAMESPACE__
+
+
+use Limkie\Console\Console;
+use Limkie\Console\Command;
     
-    use Limkie\Model;
-    
-    /**
-     *  Model Data, implements the DataContainer
-     */
-    class __CLASS__ extends Model{
-        protected $mutators = [];
-    
-        //code here
-    
+
+/**
+ *  Command class
+ */
+class __CLASS__ extends Command{
+
+    protected $description  = \'Description for __CLASS__\';
+
+    protected $options      = [];
+
+    protected $arguments    = [];
+
+    public function handle(){
+        Console::notice("Command for __CLASS__ called.");
     }
-    ';
+
+
+}
+';
 
     public function handle(){
         $model = $this->model;
@@ -42,7 +52,7 @@ class Model extends Command{
         $bits       = preg_split('#\.#',$this->arg('name'),null,PREG_SPLIT_NO_EMPTY);
 
         if(count($bits) == 1){
-            array_unshift($bits,'app','Model');            
+            array_unshift($bits,'app','Command');            
         }
         elseif(strtolower($bits[0]) !== 'app'){
             array_unshift($bits,'app');            
@@ -55,7 +65,7 @@ class Model extends Command{
 
         $storage = new Storage(__APP_PATH__.'/app');
 
-        $path = $this->opt('path','Model');
+        $path = $this->opt('path','Command');
 
         if(!$storage->isDir($path)){
             $storage->createDir($path);
@@ -69,7 +79,7 @@ class Model extends Command{
         }
 
         $storage->createFile("{$class}.php",$code);
-        Console::notice("Model successful created.");
+        Console::notice("Command successful created.");
 
     }
 

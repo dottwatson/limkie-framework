@@ -7,7 +7,7 @@ use Limkie\Console\Command;
 use Limkie\Storage;
 
 class Controller extends Command{
-    protected $description = 'Create a basico Controller using dot notation as namespace';
+    protected $description = 'Create a basic Controller using dot notation as namespace';
 
     protected $options = [
         'force'     => ['force override of file.',false,'boolean']
