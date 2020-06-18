@@ -36,3 +36,21 @@ function setConfigAll(array $data = []){
         Config::getInstance()->set($name,$value);
     }
 }
+
+
+/**
+ * return configuration for given module
+ *
+ * @param string $moduleName
+ * @param string $target
+ * @param mixed $default
+ * @return mixed
+ */
+function configModule(string $moduleName,string $target = null,$default = null){
+    $baseName = "modules.{$moduleName}";
+    if($target === null){
+        return config($baseName,$default);       
+    }
+
+    return config("{$baseName}.{$target}",$default);
+}

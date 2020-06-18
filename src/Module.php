@@ -19,7 +19,7 @@ abstract class Module{
         $reflection = new \ReflectionClass(static::class);
 
         $this->path = static::path();
-        $this->app = app();
+        $this->app  = app();
 
         $this->resourcePrefix = 'module://'.basename($this->path).'->';
     }

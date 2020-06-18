@@ -265,7 +265,7 @@ class Storage{
      * @param string $subpath
      * @return array
      */
-    public function list(string $subpath) {
+    public function listRecursive(string $subpath) {
         $targetPath = $this->getFullPath($subpath);
 
         if(!$this->isDir($subpath)){
@@ -276,11 +276,41 @@ class Storage{
     
         $items = [];
         foreach ($iterator as $item){
+            if(in_array(basename($item),['.','..'])){
+                continue;
+            }
             $items[] =$item->getPathname();
         }
 
         return $items;
     }
     
+    /**
+     * get all contents of directory
+     *
+     * @param string $subpath
+     * @return array
+     */
+    public function list(string $subpath) {
+        $targetPath = $this->getFullPath($subpath);
+
+        if(!$this->isDir($subpath)){
+            throw new \Exception($targetPath.' is not a valid path');
+        }
+
+        $contents = scandir($targetPath);
+    
+        $items = [];
+        foreach ($contents as $item){
+            if(in_array(basename($item),['.','..'])){
+                continue;
+            }
+
+            $items[] =realpath($targetPath.'/'.$item);
+        }
+
+        return $items;
+    }
+
 }
 
