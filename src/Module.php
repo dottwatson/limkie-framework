@@ -113,7 +113,7 @@ abstract class Module{
         $files = glob(static::path().'/config/*.php');
 
         foreach($files as $file){
-            $configName = basename($file);
+            $configName = basename($file,'.php');
             if($requiredConfig === null || in_array($configName,$requiredConfig)){
                 $this->app->config->loadModule(static::name(),$configName);
             }

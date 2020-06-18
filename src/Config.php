@@ -80,7 +80,7 @@ class Config extends DataContainer{
      * @param string $moduleName
      * @return void
      */
-    protected function loadModule(string $moduleFolder,string $configName){
+    public function loadModule(string $moduleFolder,string $configName){
         $filePath = path( getENv('MODULES_DIR')."/{$moduleFolder}/config/{$configName}.php");
         
         $configData = include $filePath;

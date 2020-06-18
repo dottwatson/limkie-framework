@@ -132,7 +132,7 @@ function model(string $name,array $params= []){
     
 
     if(version_compare(PHP_VERSION, '5.6.0', '>=')){
-        $instance = new $namespacedCls($params);
+        $instance = new $namespacedCls(...$params);
     } else {
         $reflect  = new ReflectionClass($namespacedCls);
         $instance = $reflect->newInstanceArgs($params);
