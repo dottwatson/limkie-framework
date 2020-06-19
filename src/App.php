@@ -155,8 +155,8 @@ class App{
         $this->console->loadCommands();
 
         if(!$this->isMaintenanceActive()){
-            $this->importGates();
-            $this->importRoutes();
+            $this->registerGates();
+            $this->registerRoutes();
         }
 
 
@@ -211,7 +211,7 @@ class App{
      *
      * @return void
      */
-    protected function importRoutes(){
+    protected function registerRoutes(){
         $env    = getEnv('ENVIRONMENT');
         $files  = glob(__APP_PATH__."/app/Http/Route/*.php"); 
         foreach($files as $routeFile){
@@ -228,7 +228,7 @@ class App{
      *
      * @return void
      */
-    protected function importGates(){
+    protected function registerGates(){
         //load Gate
         $files = glob(__APP_PATH__."/app/Http/Gate/*.php");
         foreach($files as $gateFile){
