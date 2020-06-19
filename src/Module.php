@@ -2,20 +2,26 @@
 
 namespace Limkie;
 
-use Limkie\Config;
+use Limkie\Traits\Globalizer;
+
 
 abstract class Module{
+    use Globalizer;
+
+    protected  $app;
+    protected  $request;
+    protected  $route;
 
     public $path;
-    public $app;
 
     public static $version;
     public static $name;
-    public static $descroption;
+    public static $description;
 
     protected $resourcePrefix = '';
     
     public function __construct(){
+        $this->globalize();
 
         $this->path = static::path();
         $this->app  = app();
@@ -30,10 +36,10 @@ abstract class Module{
      * Returns a model instance declared in current module
      *
      * @param string $path
-     * @param array $data
-     * @return void
+     * @param mixed $data The data to assign oin model instance
+     * @return object
      */
-    public function model(string $path = '',array $data=[]){
+    public function model(string $path = '',...$data){
         return model("{$this->resourcePrefix}{$path}",$data);
     }
 
@@ -44,7 +50,7 @@ abstract class Module{
      *
      * @param string $path
      * @param array $data
-     * @return void
+     * @return string
      */
     public function view(string $path = '',array $data=[]){
         return view("{$this->resourcePrefix}{$path}",$data);
@@ -65,7 +71,7 @@ abstract class Module{
      * Returns a response instance based on current module
      *
      * @param string $path
-     * @return void
+     * @return object
      */
     public function response(string $path = ''){
         return response("{$this->resourcePrefix}{$path}");

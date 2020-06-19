@@ -255,7 +255,9 @@ class Storage{
      * @return string
      */
     public function getFullPath(string $subpath){
-        return $this->workingPath.'/'.$subpath;
+        return (strpos($subpath,$this->workingPath) !== 0)
+            ?$this->workingPath.'/'.$subpath
+            :$subpath;
     }
 
 
@@ -265,8 +267,10 @@ class Storage{
      * @param string $subpath
      * @return array
      */
-    public function listRecursive(string $subpath) {
-        $targetPath = $this->getFullPath($subpath);
+    public function listRecursive(string $subpath = '') {
+        $targetPath = ($subpath != '')
+            ?$this->getFullPath($subpath)
+            :$this->workingPath;
 
         if(!$this->isDir($subpath)){
             throw new \Exception($targetPath.' is not a valid path');
@@ -291,8 +295,10 @@ class Storage{
      * @param string $subpath
      * @return array
      */
-    public function list(string $subpath) {
-        $targetPath = $this->getFullPath($subpath);
+    public function list(string $subpath = '') {
+        $targetPath = ($subpath != '')
+            ?$this->getFullPath($subpath)
+            :$this->workingPath;
 
         if(!$this->isDir($subpath)){
             throw new \Exception($targetPath.' is not a valid path');
