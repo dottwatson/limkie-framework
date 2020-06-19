@@ -16,12 +16,14 @@ abstract class Module{
     protected $resourcePrefix = '';
     
     public function __construct(){
-        $reflection = new \ReflectionClass(static::class);
 
         $this->path = static::path();
         $this->app  = app();
 
+
         $this->resourcePrefix = 'module://'.basename($this->path).'->';
+
+        $this->importGates();
     }
 
 
@@ -109,7 +111,7 @@ abstract class Module{
      * @param array $requiredConfig
      * @return void
      */
-    public function loadConfig(array $requiredConfig=null){
+    public function importConfig(array $requiredConfig=null){
         $files = glob(static::path().'/config/*.php');
 
         foreach($files as $file){
@@ -122,12 +124,12 @@ abstract class Module{
 
 
     /**
-     * Load routes of current module abased on current environment
+     * Load routes of current module based on current environment
      *
      * @param array $requiredRoute
      * @return void
      */
-    public function loadRoute(array $requiredRoute=null){
+    public function importRoutes(array $requiredRoute=null){
         $files = glob(static::path().'/Http/Route/*.php');
 
         foreach($files as $file){
@@ -135,6 +137,48 @@ abstract class Module{
             if($requiredRoute === null || in_array($routeName,$requiredRoute)){
                 include_once $file;
             }
+        }
+    }
+
+        /**
+     * Load routes of current module abased on current environment
+     *
+     * @param array $requiredRoute
+     * @return void
+     */
+    public function importGates(){
+        $files      = glob(static::path().'/Http/Gate/*.php');
+        $namespace  = 'Modules\\'.static::name().'\\Http\\Gate';
+
+
+        //list all classes under current Module Gate namespace
+        $classes = get_declared_classes();
+        foreach($classes as $className){
+            $lowerClsName   = strtolower($className);
+            $lowerNamespace = strtolower($namespace);
+            if(strpos($lowerClsName,$lowerNamespace) === 0){
+                $reflectionCLs  = new \ReflectionClass($className);
+                $properties     = $reflectionCLs->getDefaultProperties();
+                $alias = (isset($properties['alias']))
+                    ?trim((string)$properties['alias'])
+                    :null;
+
+                if($alias){
+                    Route::filter($alias,function() use($className){
+                        $instance = new $className;
+                        $nextStep = $instance->handle();
+
+                        if($nextStep instanceOf \Limkie\Http\Response){
+                            echo (string)$nextStep;
+                            exit;
+                        }
+
+                        $continue = ($nextStep === true || $nextStep === null)?null:false;
+
+                        return $continue;
+                    });
+                }
+            }            
         }
     }
 

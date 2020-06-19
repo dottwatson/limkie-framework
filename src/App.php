@@ -155,8 +155,8 @@ class App{
         $this->console->loadCommands();
 
         if(!$this->isMaintenanceActive()){
-            $this->loadGate();
-            $this->loadRoutes();
+            $this->importGates();
+            $this->importRoutes();
         }
 
 
@@ -207,11 +207,11 @@ class App{
     }
 
     /**
-     * Load routes based on current environment
+     * Load routes based on current environment and declared in app/Http/Route
      *
      * @return void
      */
-    public function loadRoutes(){
+    protected function importRoutes(){
         $env    = getEnv('ENVIRONMENT');
         $files  = glob(__APP_PATH__."/app/Http/Route/*.php"); 
         foreach($files as $routeFile){
@@ -224,11 +224,11 @@ class App{
 
  
     /**
-     * Load the router Gates
+     * Load application gates declared in app/Http/Gate 
      *
      * @return void
      */
-    public function loadGate(){
+    protected function importGates(){
         //load Gate
         $files = glob(__APP_PATH__."/app/Http/Gate/*.php");
         foreach($files as $gateFile){
@@ -251,17 +251,6 @@ class App{
                         $instance = new $className;
                         $response = response();
                         
-                        // $dispatcher = Route::getDispatcher();
-
-                        // $reflectionGateRoute = new \ReflectionProperty($instance,'router');
-                        // $reflectionGateRoute->setAccessible(true);
-
-                        // $routerData = $dispatcher->getRouteInfo();
-                        // $routerDataContainer = new DataContainer($routerData);
-
-
-                        // $reflectionGateRoute->setValue($instance,$routerDataContainer);
-
                         $nextStep = $instance->handle();
 
                         if($nextStep instanceOf \Limkie\Http\Response){
