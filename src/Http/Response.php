@@ -1,6 +1,7 @@
 <?php
 namespace Limkie\Http;
 
+
 /**
  * Cretae a response whit status and headers
  */
@@ -193,6 +194,10 @@ class Response{
      */
     public function __toString(){
         return $this->send();
+    }
+
+    function image($data = null){
+        return image($data);
     }
 
 }

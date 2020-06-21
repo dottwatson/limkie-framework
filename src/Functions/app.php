@@ -4,7 +4,7 @@ use Limkie\App;
 use Limkie\DB;
 use Limkie\Pipe;
 use Nahid\JsonQ\Jsonq;
-use claviska\SimpleImage;
+use Limkie\Image;
 
 
 /**
@@ -188,7 +188,24 @@ function decrypt($var,string $key = null,string $cipher = null){
 }
 
 
-
+/**
+ * return image instance
+ *
+ * @param mixed $data
+ * @return Image
+ */
 function image($data){
-    return new SimpleImage(...$data);
+    return new Image(...$data);
+}
+
+/**
+ * Undocumented function
+ *
+ * @param integer $x
+ * @param integer $y
+ * @param string|array $color
+ * @return Image
+ */
+function new_image(int $x = 0, int $y = 0,$color = null){
+    return (new Image())->fromNew($x,$y,$color);
 }

@@ -7,6 +7,7 @@ use Limkie\RouteDispatcher;
 use Limkie\RouteResolver;
 use Limkie\Http\Request;
 use Limkie\Storage;
+use Limkie\Image;
 
 
 class Route{
@@ -83,6 +84,9 @@ class Route{
         if($response instanceof HttpRouteNotFoundException){
             $contents404 = $publicStorage->contentFile('404.html');
             $response = response($contents404)->setStatus(404);
+        }
+        elseif($response instanceof Image){
+            return $response->toResponseString();
         }
         elseif($response instanceof \Exception){
             $response = response($response->getMessage());

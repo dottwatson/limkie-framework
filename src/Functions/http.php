@@ -22,7 +22,7 @@ function request(){
  * Make response with passed contents
  *
  * @param string $contents
- * @return void
+ * @return Response;
  */
 function response(string $contents = null){
     $response = new Response($contents);
