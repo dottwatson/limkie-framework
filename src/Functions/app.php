@@ -4,6 +4,8 @@ use Limkie\App;
 use Limkie\DB;
 use Limkie\Pipe;
 use Nahid\JsonQ\Jsonq;
+use claviska\SimpleImage;
+
 
 /**
  * Return app instance
@@ -183,4 +185,10 @@ function decrypt($var,string $key = null,string $cipher = null){
     }
 
     return false;
+}
+
+
+
+function image($data){
+    return new SimpleImage(...$data);
 }
