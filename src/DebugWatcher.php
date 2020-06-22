@@ -9,7 +9,11 @@ class DebugWatcher extends DataContainer{
 
     protected static $instance = null;
 
-    
+    /**
+     * Singleton
+     *
+     * @return self
+     */
     public static function getInstance(){
         if(self::$instance == null){
             self::$instance = new static;
@@ -21,8 +25,8 @@ class DebugWatcher extends DataContainer{
     /**
      * Disable the setter of DataContainer
      *
-     * @param [type] $key
-     * @param [type] $value
+     * @param string $key
+     * @param mixed $value
      * @return void
      */
     public function set($key,$value = null){
@@ -47,7 +51,5 @@ class DebugWatcher extends DataContainer{
             parent::set($key,$value);
         }
     }
-
-
 
 }

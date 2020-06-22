@@ -34,8 +34,8 @@ class Pipe{
      * This is invoked by pipe method too
      *
      * @param string|array|Closure $name
-     * @param  $args
-     * @return void
+     * @param  array $args
+     * @return mixed
      */
     public function __call($name,$args){
         $this->pipeFlow[] = [
@@ -59,8 +59,6 @@ class Pipe{
                 }
             }
         
-
-
             $this->value = call_user_func_array($name,$args);
 
             $this->pipeFlow[$pipeFlowKey]['executed']       = true;

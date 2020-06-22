@@ -12,6 +12,12 @@ class View{
     protected static $basePath;
     protected static $vars;
 
+
+    /**
+     * Checks if view is initialized and initialize it
+     *
+     * @return void
+     */
     private static function  checkInit(){
         self::$basePath = config('view.path');
         
@@ -34,18 +40,35 @@ class View{
         }
     }
 
+    /**
+     * return internal engine used for view
+     *
+     * @return object
+     */
     public static function engine(){
         return self::$engine;
     }
 
+    /**
+     * Set variable in the engine
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
     public static function setVar($name,$value){
         self::$vars->set($name,$value);
         
         return self::$engine->assign($name,$value);
     }
 
-
-
+    /**
+     * Render the view
+     *
+     * @param string $name
+     * @param array $params optiona variables to pass
+     * @return string
+     */
     public static function render($name,array $params = []){
         self::checkInit();
         
@@ -61,6 +84,11 @@ class View{
         return self::$engine->fetch($name,$viewParams);
     }
 
+    /**
+     * Register a plugin for engine
+     *
+     * @return mixed
+     */
     public static function registerPlugin(){
         self::checkInit();
 

@@ -104,7 +104,6 @@ class Storage{
                 mkdir($dirPath,0777,true);
             }
         
-            
             file_put_contents($fileName,$contents);
             return $this;
         }
@@ -129,7 +128,6 @@ class Storage{
                 mkdir($dirPath,0777,true);
             }
         
-            
             file_put_contents($fileName,$contents,FILE_APPEND);
             return $this;
         }
@@ -317,6 +315,16 @@ class Storage{
 
         return $items;
     }
+
+    /**
+     * Return the current working path
+     *
+     * @return string
+     */
+    public function __toString(){
+        return $this->workingPath;
+    }
+
 
 }
 

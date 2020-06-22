@@ -5,6 +5,12 @@ namespace Limkie;
 class Translations{
     protected static $translations;
 
+    /**
+     * Load translations based on specific (if not null) locale or application locale
+     *
+     * @param string $locale
+     * @return void
+     */
     public static function loadLocale(string $locale = null){
         $locale = ($locale)?$locale:config('app.locale');
 
@@ -23,14 +29,28 @@ class Translations{
         }
     }
 
-    public static function get($key,string $default = null){
+    /**
+     * Get translation based on its key
+     *
+     * @param string $key
+     * @param string $default
+     * @return string|null
+     */
+    public static function get(string $key,string $default = null){
         $locale = config('app.locale');
         self::loadLocale($locale);
 
         return self::$translations->get("{$locale}.{$key}",$default);
-
     }
 
+    /**
+     * Get translations based on key and specific locale
+     *
+     * @param string $locale
+     * @param string $key
+     * @param string $default
+     * @return string|null
+     */
     public static function getLocale($locale,$key,string $default = null){
         $locale = ($locale)?$locale:config('app.locale');
         self::loadLocale($locale);
@@ -39,6 +59,11 @@ class Translations{
 
     }
 
+    /**
+     * return all current translations loaded
+     *
+     * @return array
+     */
     public static function getTranslations(){
         return (!is_null(self::$translations))
             ?self::$translations->all()

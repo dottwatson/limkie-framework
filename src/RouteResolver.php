@@ -5,11 +5,14 @@ use Phroute\Phroute\HandlerResolverInterface;
 
 class RouteResolver implements HandlerResolverInterface{
     
-    public function __construct(){
-    }
 
-    public function resolve($handler)
-    {
+    /**
+     * The route resolver main method
+     *
+     * @param string|array $handler
+     * @return string|array
+     */
+    public function resolve($handler){
         if(is_string($handler)){
             $bits   = explode('@',$handler,2);
             $method = (isset($bits[1]))?$bits[1]:'index';

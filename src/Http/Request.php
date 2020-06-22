@@ -24,6 +24,11 @@ class Request{
     protected static $initialized = false;
 
 
+    /**
+     * initialize the object
+     *
+     * @return void
+     */
     protected static function init(){
         if(self::$initialized === false){
             $headers = apache_request_headers();
@@ -36,20 +41,23 @@ class Request{
             self::$cookie   = new DataContainer($_COOKIE);
             self::$headers  = new DataContainer($headers);
 
-            self::$session  = &app()->session;
-
-
-
-            self::$initialized = true;
+            self::$session      = &app()->session;
+            self::$initialized  = true;
         }
     }
 
-
+    /**
+     * Set methods accessible via static or objuect iinstance
+     *
+     * @param string $name
+     * @param array $args
+     * @return mixed
+     */
     public function __call($name,$args){
         if(method_exists($this,$name)){
             $reflectionMethod = new \ReflectionMethod($this,$name);
             if($reflectionMethod->isPublic() && $reflectionMethod->isStatic()){
-                return call_user_func_array(static::class."..{$name}",$args);
+                return call_user_func_array(static::class.":{$name}",$args);
             }
         }
 
@@ -78,6 +86,11 @@ class Request{
     }
 
 
+    /**
+     * Get current protocol
+     *
+     * @return string
+     */
     public static function protocol(){
         $sslPort=443; /* for it might be different, as also Gabriel Sosa stated */
         
@@ -317,10 +330,24 @@ class Request{
         return self::$headers->get($key,$default);
     }
 
+
+    /**
+     * Check if current requist requires a json response
+     *
+     * @return boolean
+     */
     public static function isJson(){
-        return self::header('Content-type') == 'application/json';
+        return in_array(
+            self::header('Content-type'),
+            ['application/json']
+        );
     }
 
+    /**
+     * Check if current requist requires an XML response
+     *
+     * @return boolean
+     */
     public static function isXML(){
         return in_array(
             self::header('Content-type'),

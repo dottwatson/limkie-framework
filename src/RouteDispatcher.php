@@ -38,8 +38,8 @@ class RouteDispatcher extends Dispatcher{
     /**
      * Dispatch a route for the given HTTP Method / URI.
      *
-     * @param $httpMethod
-     * @param $uri
+     * @param string $httpMethod
+     * @param string $uri
      * @return mixed|null
      */
     public function dispatch($httpMethod, $uri)
@@ -68,8 +68,7 @@ class RouteDispatcher extends Dispatcher{
 
         list($beforeFilter, $afterFilter) = $parseFilters->invokeArgs($this,[$filters]);
 
-        if(($response = $dispatchFilters->invokeArgs($this,[$beforeFilter])) !== null)
-        {
+        if(($response = $dispatchFilters->invokeArgs($this,[$beforeFilter])) !== null){
             return $response;
         }
         
@@ -81,9 +80,9 @@ class RouteDispatcher extends Dispatcher{
     }
 
     /**
-     * Return onfo on current route resolved
+     * Return info on current route resolved
      *
-     * @return void
+     * @return array
      */
     public function getRouteInfo(){
         return $this->routeInfo;

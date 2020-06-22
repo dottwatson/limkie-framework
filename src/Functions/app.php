@@ -194,7 +194,7 @@ function decrypt($var,string $key = null,string $cipher = null){
  * @param mixed $data
  * @return Image
  */
-function image($data){
+function image($data = null){
     return new Image(...$data);
 }
 

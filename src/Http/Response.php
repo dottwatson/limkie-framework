@@ -11,7 +11,12 @@ class Response{
     protected $body = '';
 
 
-    public function __construct($contents = null){
+    /**
+     * set current body
+     *
+     * @param string $contents
+     */
+    public function __construct(string $contents = null){
         if($contents !== null){
             $this->setBody($contents);
         }
@@ -48,7 +53,7 @@ class Response{
     }
 
     /**
-     * Set headers with an array pair hederName=>headerValue
+     * Set headers with an array pair headerName=>headerValue
      *
      * @param array $headers
      * @return self
@@ -141,7 +146,6 @@ class Response{
      * @return self
      */
     public function setCookie(string $name , $value = "" , int $expires = 0 , string $path = "" , string $domain = "" , bool $secure = FALSE , bool $httponly = false ){
-        
         setCookie($name , $value  , $expires , $path , $domain , $secure , $httponly);
         return $this;
     }
@@ -163,7 +167,7 @@ class Response{
 
 
     /**
-     * Set a location header parameter
+     * Set a location header parameter to the request url
      *
      * @return self
      */
@@ -185,7 +189,6 @@ class Response{
         $this->setHeader('Content-Type','application/json')->send($data);
     }
 
-
     /**
      * convert object to string
      * 
@@ -196,6 +199,12 @@ class Response{
         return $this->send();
     }
 
+    /**
+     * Return an image instance to send as response
+     *
+     * @param mixed $data
+     * @return Image
+     */
     function image($data = null){
         return image($data);
     }

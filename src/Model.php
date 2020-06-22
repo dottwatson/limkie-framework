@@ -10,7 +10,6 @@ use Limkie\DataContainer;
 class Model extends DataContainer{
     protected $mutators = [];
 
-    //code here
 
 }
 

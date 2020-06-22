@@ -32,7 +32,7 @@ class Route{
      *
      * @param string $name
      * @param array $arguments
-     * @return void
+     * @return mixed
      */
     public static function __callStatic($name, $arguments){
         if(!self::$router){

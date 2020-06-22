@@ -10,6 +10,12 @@ use ReflectionClass;
 
 trait Globalizer{
 
+    /**
+     * Inspect current object and ,based on protected variables names, 
+     * assign app or request or route
+     *
+     * @return void
+     */
     protected function globalize(){
         $ref = new ReflectionClass($this);
         $atts = $ref->getDefaultProperties();
@@ -26,9 +32,6 @@ trait Globalizer{
             $routerData = Route::getDispatcher()->getRouteInfo();
             $this->route = new DataContainer($routerData);
         }
-
-
-
 
     }
 

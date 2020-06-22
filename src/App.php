@@ -375,7 +375,12 @@ class App{
         // die();
     }
 
-
+    /**
+     * get an enve variable
+     *
+     * @param string $key
+     * @return mixed
+     */
     public function env(string $key = null){
         $key =  ($key)?".{$key}":"";
 
