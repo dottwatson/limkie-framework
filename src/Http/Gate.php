@@ -1,10 +1,10 @@
 <?php
 namespace Limkie\Http;
 
-use Limkie\Traits\Globalizer;
+use Limkie\Traits\Inseminator;
 
 abstract class Gate{
-    use Globalizer;
+    use Inseminator;
     
     protected $app;
     protected $request;
@@ -15,7 +15,7 @@ abstract class Gate{
 
 
     public function __construct(){
-        $this->globalize();
+        $this->inseminate();
     }
 
     abstract public function handle();

@@ -2,12 +2,12 @@
 
 namespace Limkie\Http;
 
-use Limkie\Traits\Globalizer;
+use Limkie\Traits\Inseminator;
 use Rakit\Validation\Validator;
 
 
 class Controller{
-    use Globalizer;
+    use Inseminator;
 
     /**
      * The default response class , declared in dot notation
@@ -23,7 +23,7 @@ class Controller{
 
 
     public function __construct(){
-        $this->globalize();
+        $this->inseminate();
 
         $this->validator    = new Validator();
         $this->response     = ($this->defaultResponse)

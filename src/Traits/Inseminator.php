@@ -8,15 +8,22 @@ use Limkie\Route;
 use Limkie\DataContainer;
 use ReflectionClass;
 
-trait Globalizer{
+trait Inseminator{
 
     /**
      * Inspect current object and ,based on protected variables names, 
      * assign app or request or route
-     *
+     * 
+     * Current data will be inseminated
+     * 
+     * app: the app
+     * request: current instantiated object request
+     * route: the resolved route informations
+     * session: the current session
+     * 
      * @return void
      */
-    protected function globalize(){
+    protected function inseminate(){
         $ref = new ReflectionClass($this);
         $atts = $ref->getDefaultProperties();
 
@@ -32,6 +39,11 @@ trait Globalizer{
             $routerData = Route::getDispatcher()->getRouteInfo();
             $this->route = new DataContainer($routerData);
         }
+
+        if(isset($atts['session'])){
+            $this->session = app()->session;
+        }
+
 
     }
 

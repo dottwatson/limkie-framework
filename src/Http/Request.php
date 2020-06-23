@@ -2,7 +2,7 @@
 namespace Limkie\Http;
 
 use Limkie\DataContainer;
-use Limkie\Traits\Globalizer;
+use Limkie\Traits\Inseminator;
 
 /**
  * Retrieve informations on current request

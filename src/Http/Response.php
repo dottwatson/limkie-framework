@@ -80,7 +80,7 @@ class Response{
     /**
      * The main method to send data 
      *
-     * @param mixed $content if set, eoverwrite contents to send
+     * @param mixed $content if set, overwrite contents to send
      * @return 
      */
     public function send($contents=null){

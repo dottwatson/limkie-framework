@@ -2,11 +2,11 @@
 
 namespace Limkie;
 
-use Limkie\Traits\Globalizer;
+use Limkie\Traits\Inseminator;
 
 
 abstract class Module{
-    use Globalizer;
+    use Inseminator;
 
     protected  $app;
     protected  $request;
@@ -21,7 +21,7 @@ abstract class Module{
     protected $resourcePrefix = '';
     
     public function __construct(){
-        $this->globalize();
+        $this->inseminate();
 
         $this->path = static::path();
         $this->app  = app();
