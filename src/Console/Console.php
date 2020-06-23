@@ -36,6 +36,11 @@ class Console{
         self::$instance = $this;
     }
 
+    /**
+     * Singleton
+     *
+     * @return self
+     */
     public static function getInstance(){
         if(self::$instance == null){
             self::$instance = new static;
@@ -44,6 +49,12 @@ class Console{
         return self::$instance;
     }
 
+    /**
+     * Generig message formatter
+     *
+     * @param string $message
+     * @return string
+     */
     public static function formatMessageConsole($message=''){
         if(!self::$log){
             $streamLogger = new StreamLogger(STDOUT);
@@ -66,47 +77,104 @@ class Console{
         self::$log->debug($message);
     }
 
+    /**
+     * write in console a well formatted and colored success message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function info($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->info($message);
     }
 
+    /**
+     * write in console a well formatted and colored notice message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function notice($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->notice($message);
     }
 
+    /**
+     * write in console a well formatted and colored warning message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function warning($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->warning($message);
     }
 
+    /**
+     * write in console a well formatted and colored error message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function error($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->error($message);
     }
 
+    /**
+     * write in console a well formatted and colored critical message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function critical($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->critical($message);
     }
 
+    /**
+     * write in console a well formatted and colored alert message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function alert($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->alert($message);
     }
 
+    /**
+     * write in console a well formatted and colored emergency message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function emergency($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->emergency($message);
     }
 
+    /**
+     * write in console a well formatted and colored success message
+     *
+     * @param string $message
+     * @return void
+     */
     public static function success($message = ''){
         $message = self::formatMessageConsole($message);
         self::$log->log('success',$message);
     }
 
 
+
+    /**
+     * Register a command
+     *
+     * @param string $commandName
+     * @param string $commandCls
+     * 
+     * @return self|bool
+     */
     public function registerCommand($commandName = '',$commandCls){
         $commandName = trim($commandName);
         if(array_key_exists($commandName,self::$commands)){
@@ -155,7 +223,11 @@ class Console{
         }
     }
     
-    
+    /**
+     * Load command declared in config console.php
+     *
+     * @return void
+     */
     public function loadCommands(){
         self::$cli          = Cli::create();
         $definedCommands    = config('console.commands',[]);
@@ -165,6 +237,12 @@ class Console{
         }
     }
 
+    /**
+     * Listen the console and executre commands
+     *
+     * @param array $argv
+     * @return mixed
+     */
     public function listen($argv){
         $commandInfo        = self::$cli->parse($argv)->jsonSerialize();
         $commandCls         = self::$commands[ $commandInfo['command'] ];
